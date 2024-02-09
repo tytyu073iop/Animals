@@ -5,8 +5,8 @@
 class Owner {
 	std::string FIO;
 	std::string adress;
-	Owner();
 public:
+	Owner();
 	std::string GetFIO() const;
 	std::string GetAdress() const;
 	Owner(std::string FIO, std::string Adress);

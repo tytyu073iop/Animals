@@ -1,5 +1,6 @@
 #include "Species.h"
 #include <iostream>
+#include <utility>
 
 void Cat::meow() const
 {
@@ -11,13 +12,13 @@ void Cat::lick() const
 	std::cout << "You've been licked" << std::endl;
 }
 
-Cat::Cat(Owner owner, int age = -1, std::string name = "") : Animal(owner, age, name) {}
+Cat::Cat(Owner owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
 
-Dog::Dog(Owner owner, int age = -1, std::string name = "") : Animal(owner, age, name) {}
+Dog::Dog(Owner owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
 
-Fish::Fish(Owner owner, int age = -1, std::string name = "") : Animal(owner, age, name) {}
+Fish::Fish(Owner owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
 
-Parrot::Parrot(Owner owner, int age = -1, std::string name = "") : Animal(owner, age, name) {}
+Parrot::Parrot(Owner owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
 
 void Dog::Bark() const
 {

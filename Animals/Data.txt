@@ -1,5 +1,5 @@
 Dog;Max;3;John Doe,123 Main St
-Cat;Bella;2;John Doe,123 Main St
+Cat;Max;2;John Doe,123 Main St
 Fish;;1;John Doe,123 Main St
 Parrot;Tweety;1;Jane Smith,456 Oak St
 Dog;Max;4;Jane Smith,456 Oak St
