@@ -363,6 +363,8 @@ MigrationBackup/
 FodyWeavers.xsd
 
 #Bazel
-*basel*
+*bazel*
+WORKSPACE
 */WORKSPACE
 */BUILD
+*/a.out

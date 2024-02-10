@@ -12,6 +12,7 @@
 #include <iterator>
 #include <cassert>
 #include <ranges>
+#include <filesystem>
 
 // Animal definition: species;name;age;owner name,owner adress
 
@@ -24,7 +25,7 @@ int main() {
 	//end
 	std::ifstream in("Data.txt");
 	if (!in.is_open()) { std::cerr << "File wasn't opened"; return -1; }
-	if (in.eof()) { std::cerr << "File empty"; return -2; }
+	if (in.peek() == std::char_traits<char>::eof()) { std::cerr << "File empty"; return -2; }
 	std::string temp;
 	while (std::getline(in, temp)) {
 		std::stringstream ss(temp);
@@ -32,22 +33,23 @@ int main() {
 		std::string name; if (!std::getline(ss, name, ';')) { std::cerr << "Something went wrong\n" << name; return 0; }
 		std::string age; if (!std::getline(ss, age, ';')) { std::cerr << "Something went wrong\n" << age; return 0; }
 		std::string own_name; if (!std::getline(ss, own_name, ',')) { std::cerr << "Something went wrong\n" << own_name; return 0; }
-		std::string own_adrr; if (!std::getline(ss, own_adrr).eof()) { std::cerr << "Something went wrong\n" << own_adrr; return 0; }
+		if (own_name.empty()) { std::cerr << "No name"; return 4; }
+		std::string own_adrr; std::getline(ss, own_adrr);
+		if (own_adrr.empty()) { std::cerr << "No adress"; return 5; }
 		int num_age = -1;
 		try { if (!age.empty()) { num_age = std::stoi(age); } }
 		catch (std::invalid_argument) { std::cerr << "Not an age"; return 2; }
 		catch (std::out_of_range) { std::cerr << "Too big"; return 1; }
 		if (spec == "Dog") {
 			dogs.push_back(Dog(Owner(own_name, own_adrr), num_age, name));
-		}
-		if (spec == "Cat") {
+		} else if (spec == "Cat") {
 			cats.push_back(Cat(Owner(own_name, own_adrr), num_age, name));
-		}
-		if (spec == "Fish") {
+		} else if (spec == "Fish") {
 			Fishes.push_back(Fish(Owner(own_name, own_adrr), num_age, name));
-		}
-		if (spec == "Parrot") {
+		} else if (spec == "Parrot") {
 			Parrots.push_back(Parrot(Owner(own_name, own_adrr), num_age, name));
+		} else {
+			std::cerr << "No species"; return -3;
 		}
 	}
 	// }
