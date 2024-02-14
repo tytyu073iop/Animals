@@ -7,7 +7,8 @@ class Owner {
 	std::string adress;
 public:
 	Owner();
+	Owner(std::string FIO, std::string Adress);
 	std::string GetFIO() const;
 	std::string GetAdress() const;
-	Owner(std::string FIO, std::string Adress);
+	void interact(Animal* pet) const;
 };

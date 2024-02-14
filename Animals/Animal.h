@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Owner.h"
 #include <string>
+#include "Owner.h"
 
 class Animal {
 	static int new_id;
@@ -14,6 +14,5 @@ public:
 	std::string GetName() const;
 	int GetAge() const;
 	Owner GetOwner() const;
-	Animal(Owner, int age, std::string name);
-	Animal();
+	virtual void Do() const = 0;
 };

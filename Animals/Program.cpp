@@ -13,15 +13,27 @@
 #include <cassert>
 #include <ranges>
 #include <filesystem>
+#include <functional>
 
 // Animal definition: species;name;age;owner name,owner adress
+
+void animal_out(const Animal& min) {
+	
+	std::cout << std::string(typeid(min).name()) << ';' << min.GetName() << ';' << min.GetAge() << ';' << min.GetOwner().GetFIO() << ';' << min.GetOwner().GetAdress();
+}
+
+void virtual_test(Animal* i) {
+	std::cout << "virtual test\n";  i->GetOwner().interact(i); std::cout << '\n';
+}
 
 int main() {
 	//Data keepers
 	std::vector<Cat> cats;
 	std::vector<Dog> dogs;
-	std::vector<Fish> Fishes;
-	std::vector<Parrot> Parrots;
+	std::vector<Fish> fishes;
+	std::vector<Parrot> parrots;
+	//
+	std::vector<std::reference_wrapper<Animal>> box;
 	//end
 	std::ifstream in("Data.txt");
 	if (!in.is_open()) { std::cerr << "File wasn't opened"; return -1; }
@@ -42,12 +54,16 @@ int main() {
 		catch (std::out_of_range) { std::cerr << "Too big"; return 1; }
 		if (spec == "Dog") {
 			dogs.push_back(Dog(Owner(own_name, own_adrr), num_age, name));
+			box.push_back(dogs.back());
 		} else if (spec == "Cat") {
 			cats.push_back(Cat(Owner(own_name, own_adrr), num_age, name));
+			box.push_back(cats.back());
 		} else if (spec == "Fish") {
-			Fishes.push_back(Fish(Owner(own_name, own_adrr), num_age, name));
+			fishes.push_back(Fish(Owner(own_name, own_adrr), num_age, name));
+			box.push_back(fishes.back());
 		} else if (spec == "Parrot") {
-			Parrots.push_back(Parrot(Owner(own_name, own_adrr), num_age, name));
+			parrots.push_back(Parrot(Owner(own_name, own_adrr), num_age, name));
+			box.push_back(parrots.back());
 		} else {
 			std::cerr << "No species"; return -3;
 		}
@@ -60,18 +76,10 @@ int main() {
 			}
 		};
 		std::map<Owner, int, comp> m;
-		for (auto i : dogs) {
-			m[i.GetOwner()]++;
+		for (auto i : box) {
+			m[i.get().GetOwner()]++;
 		}
-		for (auto i : cats) {
-			m[i.GetOwner()]++;
-		}
-		for (auto i : Fishes) {
-			m[i.GetOwner()]++;
-		}
-		for (auto i : Parrots) {
-			m[i.GetOwner()]++;
-		}
+		
 		std::cout << "amout of animals of owner" << '\n';
 		for (auto i : m) {
 			std::cout << i.first.GetFIO() << ": " << i.second << '\n';
@@ -81,28 +89,10 @@ int main() {
 		std::string spec;
 		std::cout << "enter specie to find:";
 		std::cin >> spec;
-		if (spec == "Dog") {
-			std::cout << "Dogs:\n";
-			for (auto i : dogs) {
-				std::cout << i.GetOwner().GetFIO() << ", " << i.GetName() << '\n';
-			}
-		}
-		if (spec == "Cat") {
-			std::cout << "Cats:\n";
-			for (auto i : cats) {
-				std::cout << i.GetOwner().GetFIO() << ", " << i.GetName() << '\n';
-			}
-		}
-		if (spec == "Fish") {
-			std::cout << "Fishes:\n";
-			for (auto i : Fishes) {
-				std::cout << i.GetOwner().GetFIO() << ", " << i.GetName() << '\n';
-			}
-		}
-		if (spec == "Parrot") {
-			std::cout << "Parrots:\n";
-			for (auto i : Parrots) {
-				std::cout << i.GetOwner().GetFIO() << ", " << i.GetName() << '\n';
+		std::cout << spec << "s:\n";
+		for (auto i : box) {
+			if (typeid(i.get()).name() == spec) {
+				std::cout << i.get().GetOwner().GetFIO() << ", " << i.get().GetName() << '\n';
 			}
 		}
 	}
@@ -121,55 +111,22 @@ int main() {
         {
             std::cout << "Dog\n";
         }
-        if (std::any_of(Fishes.begin(), Fishes.end(), [name](const Fish &i)
+        if (std::any_of(fishes.begin(), fishes.end(), [name](const Fish &i)
                         { return i.GetName() == name; }))
         {
             std::cout << "Fishes\n";
         }
-        if (std::any_of(Parrots.begin(), Parrots.end(), [name](const Parrot &i)
+        if (std::any_of(parrots.begin(), parrots.end(), [name](const Parrot &i)
                         { return i.GetName() == name; }))
         {
             std::cout << "Parrots\n";
         }
     }
 	{
-		struct AnimalSpecs : public Animal {
-			std::string spec;
-			AnimalSpecs() {}
-            AnimalSpecs(Animal animal, std::string spec) : Animal(std::move(animal)), spec(std::move(spec)) {}
-            bool operator<(const AnimalSpecs &i) const
-            {
-                return GetAge() < i.GetAge();
-            }
-        };
-		std::vector <AnimalSpecs> ma;
-		for (auto i: dogs) {
-			if (i.GetAge() != -1) {
-				assert(i.GetAge() >= 0);
-				ma.push_back(AnimalSpecs(i, "dog"));
-			}
-		}
-		for (auto i: cats) {
-			if (i.GetAge() != -1) {
-				assert(i.GetAge() >= 0);
-				ma.push_back(AnimalSpecs(i, "cat"));
-			}
-		}
-		for (auto i: Fishes) {
-			if (i.GetAge() != -1) {
-				assert(i.GetAge() >= 0);
-				ma.push_back(AnimalSpecs(i, "fish"));
-			}
-		}
-		for (auto i: Parrots) {
-			if (i.GetAge() != -1) {
-				assert(i.GetAge() >= 0);
-				ma.push_back(AnimalSpecs(i, "parrot"));
-			}
-		}
-		const auto [min, max] = std::minmax_element(ma.begin(), ma.end());
-		std::cout << "min and max age:\nmin:" << min->spec << ';' << min->GetName() << ';' << min->GetAge() << ';' << min->GetOwner().GetFIO() << ';' << min->GetOwner().GetAdress();
-		std::cout << "\nmax:" << max->spec << ';' << max->GetName() << ';' << max->GetAge() << ';' << max->GetOwner().GetFIO() << ';' << max->GetOwner().GetAdress();
+		
+		const auto [min, max] = std::minmax_element(box.begin(), box.end());
+		std::cout << "min and max age:\nmin:"; animal_out(*min);
+		std::cout << "\nmax:"; animal_out(*max);
 	}
 	return 0;
 }
