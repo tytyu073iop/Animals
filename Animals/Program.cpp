@@ -18,6 +18,7 @@
 #include <typeindex>
 #include <cctype>
 #include <set>
+#include <optional>
 
 // Animal definition: species;name;age;owner name,owner adress
 
@@ -42,7 +43,12 @@ void interact(Animal* pet)
 	pet->Do();
 }
 void animal_out(const Animal* min) {
-	std::cout << itot[std::type_index(typeid(*min))] << ';' << min->GetName() << ';' << min->GetAge() << ';' << min->GetOwner().GetFIO() << ',' << min->GetOwner().GetAdress() << ';' << min->GetId() << '\n';
+	std::cout << itot[std::type_index(typeid(*min))] << ';' << min->GetName() << ';';
+	auto owner = min->GetOwner();
+	if (owner) {
+		std::cout << owner->GetFIO() << ',' << owner->GetAdress();
+	}
+	std::cout << ';' << min->GetId() << '\n';
 }
 void virtual_test(Animal* i) {
 	std::cout << "virtual test\n";  interact(i); std::cout << '\n';
@@ -59,10 +65,15 @@ int main() {
 		std::string spec; if (!std::getline(ss, spec, ';')) {std::cerr << "Something went wrong\n" << spec; return 0;}
 		std::string name; if (!std::getline(ss, name, ';')) { std::cerr << "Something went wrong\n" << name; return 0; }
 		std::string age; if (!std::getline(ss, age, ';')) { std::cerr << "Something went wrong\n" << age; return 0; }
-		std::string own_name; if (!std::getline(ss, own_name, ',')) { std::cerr << "Something went wrong\n" << own_name; return 0; }
-		if (own_name.empty()) { std::cerr << "No name"; return 4; }
+		bool f = false;
+		std::string own_name; if (!std::getline(ss, own_name, ',')) { f = true; }
 		std::string own_adrr; std::getline(ss, own_adrr);
+		std::optional<Owner> owner;
+		if (!f) {
+		if (own_name.empty()) { std::cerr << "No name"; return 4; }
 		if (own_adrr.empty()) { std::cerr << "No adress"; return 5; }
+		owner = Owner(own_name, own_adrr);
+		}
 		int num_age = -1;
 		try { if (!age.empty()) { num_age = std::stoi(age); } }
 		catch (std::invalid_argument) { std::cerr << "Not an age"; return 2; }
@@ -70,14 +81,14 @@ int main() {
 		StandartizeString(spec);
 		if (spec == "Dog") {
 			// auto i = Dog(Owner(own_name, own_adrr), num_age, name);
-			box.push_back(new Dog(Owner(own_name, own_adrr), num_age, name));
+			box.push_back(new Dog(owner, num_age, name));
 			//box.push_back(dogs.back());
 		} else if (spec == "Cat") {
-			box.push_back(new Cat(Owner(own_name, own_adrr), num_age, name));
+			box.push_back(new Cat(owner, num_age, name));
 		} else if (spec == "Fish") {
-			box.push_back(new Fish(Owner(own_name, own_adrr), num_age, name));
+			box.push_back(new Fish(owner, num_age, name));
 		} else if (spec == "Parrot") {
-			box.push_back(new Parrot(Owner(own_name, own_adrr), num_age, name));
+			box.push_back(new Parrot(owner, num_age, name));
 		} else {
 			std::cerr << "No species"; return -3;
 		}
@@ -112,17 +123,20 @@ int main() {
 void task1(const std::vector<Animal*> box)
 {
 		struct comp {
-			bool operator() (const Owner& i, const Owner& j) const {
-			return i.GetFIO() == j.GetFIO() ? i.GetAdress() < j.GetAdress() : i.GetFIO() < j.GetFIO();
+			bool operator() (const std::optional<Owner>& i, const std::optional<Owner>& j) const {
+			if (!i || !j) {
+				return bool(i) < bool(j);
+			}
+			return i->GetFIO() == j->GetFIO() ? i->GetAdress() < j->GetAdress() : i->GetFIO() < j->GetFIO();
 			}
 		};
-		std::map<Owner, int, comp> m;
+		std::map<std::optional<Owner>, int, comp> m;
 		for (const auto i : box) {
 			m[i->GetOwner()]++;
 		}
 		std::cout << "amout of animals of owner" << '\n';
 		for (auto i : m) {
-			std::cout << i.first.GetFIO() << ": " << i.second << '\n';
+			std::cout << (i.first ? i.first->GetFIO() : "No owner") << ": " << i.second << '\n';
 		}
 	}
 
@@ -137,7 +151,7 @@ void task2(const std::vector<Animal*> box)
 		for (auto i : box) {
 			if(std::string(typeid(*i).name()).find(spec) != std::string::npos) {
 				f = true;
-				std::cout << i->GetOwner().GetFIO() << ", " << (i->GetName().empty() ? "No name" : i->GetName()) << '\n';
+				std::cout << (i->GetOwner() ? i->GetOwner()->GetFIO() : "No owner") << ", " << (i->GetName().empty() ? "No name" : i->GetName()) << '\n';
 			}
 		}
 		if (!f) {

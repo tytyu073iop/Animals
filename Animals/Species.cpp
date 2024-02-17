@@ -2,13 +2,13 @@
 #include <iostream>
 #include <utility>
 
-Cat::Cat(Owner owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
+Cat::Cat(std::optional<Owner> owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
 
-Dog::Dog(Owner owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
+Dog::Dog(std::optional<Owner> owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
 
-Fish::Fish(Owner owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
+Fish::Fish(std::optional<Owner> owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
 
-Parrot::Parrot(Owner owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
+Parrot::Parrot(std::optional<Owner> owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {}
 
 
 void Cat::Do() const

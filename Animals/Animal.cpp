@@ -17,11 +17,11 @@ int Animal::GetAge() const
     return age;
 }
 
-Owner Animal::GetOwner() const
+std::optional<Owner> Animal::GetOwner() const
 {
     return owner;
 }
 
-Animal::Animal(Owner owner, int age = -1, std::string name = "") : id(new_id++), owner(std::move(owner)), age(age), name(std::move(name)) {}
+Animal::Animal(std::optional<Owner> owner, int age = -1, std::string name = "") : id(new_id++), owner(owner), age(age), name(std::move(name)) {}
 
 int Animal::new_id = 0;

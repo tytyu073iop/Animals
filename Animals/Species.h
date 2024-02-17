@@ -6,23 +6,23 @@
 class Cat : public Animal {
 public:
 	void Do() const;
-	Cat(Owner, int age, std::string name);
+	Cat(std::optional<Owner>, int age, std::string name);
 };
 
 class Dog : public Animal {
 public:
 	void Do() const;
-	Dog(Owner, int age, std::string name);
+	Dog(std::optional<Owner>, int age, std::string name);
 };
 
 class Fish : public Animal {
 public:
 	void Do() const;
-	Fish(Owner, int age, std::string name);
+	Fish(std::optional<Owner>, int age, std::string name);
 };
 
 class Parrot : public Animal {
 public:
 	void Do() const;
-	Parrot(Owner, int age, std::string name);
+	Parrot(std::optional<Owner>, int age, std::string name);
 };
