@@ -10,5 +10,5 @@ public:
 	Owner(std::string FIO, std::string Adress);
 	std::string GetFIO() const;
 	std::string GetAdress() const;
-	void interact(Animal* pet) const;
+	//void interact(Animal* pet) const; cycle problem
 };

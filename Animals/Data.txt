@@ -6,5 +6,5 @@ Dog;Max;4;Jane Smith,456 Oak St
 Cat;Whiskers;2;Alice Johnson,789 Pine St
 Fish;;2;Alice Johnson,789 Pine St
 Dog;Rex;6;Bob Brown,321 Elm St
-Cat;Mittens;3;Bob Brown,321 Elm St
+Cat;Mittens;;Bob Brown,321 Elm St
 Parrot;Polly;5;Bob Brown,321 Elm St

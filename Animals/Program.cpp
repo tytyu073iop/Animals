@@ -14,27 +14,42 @@
 #include <ranges>
 #include <filesystem>
 #include <functional>
+#include <typeinfo>
+#include <typeindex>
+#include <cctype>
+#include <set>
 
 // Animal definition: species;name;age;owner name,owner adress
 
-void animal_out(const Animal& min) {
-	
-	std::cout << std::string(typeid(min).name()) << ';' << min.GetName() << ';' << min.GetAge() << ';' << min.GetOwner().GetFIO() << ';' << min.GetOwner().GetAdress();
-}
+// Databases
+std::map<std::type_index, std::string> itot {
+	{typeid(Cat), "Cat"},
+	{typeid(Dog), "Dog"},
+	{typeid(Fish), "Fish"},
+	{typeid(Parrot), "Parrot"},
+};
+//
 
+void task1(const std::vector<Animal*>);
+void task2(const std::vector<Animal*>);
+void task3(const std::vector<Animal*>);
+void task4(const std::vector<Animal*>);
+void StandartizeString(std::string&);
+void interact(Animal* pet)
+{
+	const std::type_info& t = typeid(*pet);
+	std::cout << "it's a " << itot[std::type_index(t)] << '\n';
+	pet->Do();
+}
+void animal_out(const Animal* min) {
+	std::cout << itot[std::type_index(typeid(*min))] << ';' << min->GetName() << ';' << min->GetAge() << ';' << min->GetOwner().GetFIO() << ',' << min->GetOwner().GetAdress() << ';' << min->GetId() << '\n';
+}
 void virtual_test(Animal* i) {
-	std::cout << "virtual test\n";  i->GetOwner().interact(i); std::cout << '\n';
+	std::cout << "virtual test\n";  interact(i); std::cout << '\n';
 }
 
 int main() {
-	//Data keepers
-	std::vector<Cat> cats;
-	std::vector<Dog> dogs;
-	std::vector<Fish> fishes;
-	std::vector<Parrot> parrots;
-	//
-	std::vector<std::reference_wrapper<Animal>> box;
-	//end
+	std::vector<Animal*> box;
 	std::ifstream in("Data.txt");
 	if (!in.is_open()) { std::cerr << "File wasn't opened"; return -1; }
 	if (in.peek() == std::char_traits<char>::eof()) { std::cerr << "File empty"; return -2; }
@@ -52,81 +67,121 @@ int main() {
 		try { if (!age.empty()) { num_age = std::stoi(age); } }
 		catch (std::invalid_argument) { std::cerr << "Not an age"; return 2; }
 		catch (std::out_of_range) { std::cerr << "Too big"; return 1; }
+		StandartizeString(spec);
 		if (spec == "Dog") {
-			dogs.push_back(Dog(Owner(own_name, own_adrr), num_age, name));
-			box.push_back(dogs.back());
+			// auto i = Dog(Owner(own_name, own_adrr), num_age, name);
+			box.push_back(new Dog(Owner(own_name, own_adrr), num_age, name));
+			//box.push_back(dogs.back());
 		} else if (spec == "Cat") {
-			cats.push_back(Cat(Owner(own_name, own_adrr), num_age, name));
-			box.push_back(cats.back());
+			box.push_back(new Cat(Owner(own_name, own_adrr), num_age, name));
 		} else if (spec == "Fish") {
-			fishes.push_back(Fish(Owner(own_name, own_adrr), num_age, name));
-			box.push_back(fishes.back());
+			box.push_back(new Fish(Owner(own_name, own_adrr), num_age, name));
 		} else if (spec == "Parrot") {
-			parrots.push_back(Parrot(Owner(own_name, own_adrr), num_age, name));
-			box.push_back(parrots.back());
+			box.push_back(new Parrot(Owner(own_name, own_adrr), num_age, name));
 		} else {
 			std::cerr << "No species"; return -3;
 		}
 	}
-	// }
+	virtual_test(box[0]);
+	std::cout << "Choose task from 1-4: ";
+	short task;
+	std::cin >> task;
+	switch (task)
 	{
+	case 1:
+		task1(box);
+		break;
+	case 2:
+		task2(box);
+		break;
+	case 3:
+		task3(box);
+		break;
+	case 4:
+		task4(box);
+		break;
+	default:
+		std::cout << "No task on that number\n";
+		break;
+	}
+	
+	
+	return 0;
+}
+
+void task1(const std::vector<Animal*> box)
+{
 		struct comp {
 			bool operator() (const Owner& i, const Owner& j) const {
 			return i.GetFIO() == j.GetFIO() ? i.GetAdress() < j.GetAdress() : i.GetFIO() < j.GetFIO();
 			}
 		};
 		std::map<Owner, int, comp> m;
-		for (auto i : box) {
-			m[i.get().GetOwner()]++;
+		for (const auto i : box) {
+			m[i->GetOwner()]++;
 		}
-		
 		std::cout << "amout of animals of owner" << '\n';
 		for (auto i : m) {
 			std::cout << i.first.GetFIO() << ": " << i.second << '\n';
 		}
 	}
-	{
+
+void task2(const std::vector<Animal*> box)
+{
 		std::string spec;
 		std::cout << "enter specie to find:";
 		std::cin >> spec;
+		StandartizeString(spec);
 		std::cout << spec << "s:\n";
+		bool f = false;
 		for (auto i : box) {
-			if (typeid(i.get()).name() == spec) {
-				std::cout << i.get().GetOwner().GetFIO() << ", " << i.get().GetName() << '\n';
+			if(std::string(typeid(*i).name()).find(spec) != std::string::npos) {
+				f = true;
+				std::cout << i->GetOwner().GetFIO() << ", " << (i->GetName().empty() ? "No name" : i->GetName()) << '\n';
 			}
 		}
+		if (!f) {
+			std::cout << "No animal of that specie\n";
+		}
 	}
-	{
+
+void task3(const std::vector<Animal*> box)
+{
 		std::string name;
-		std::cout << "enter name:";
+		std::cout << "enter name: ";
 		std::cin >> name;
-		std::cout << "species:\n";
-        if (std::any_of(cats.begin(), cats.end(), [name](const Cat &i)
-                        { return i.GetName() == name; }))
-        {
-            std::cout << "Cat\n";
-        }
-        if (std::any_of(dogs.begin(), dogs.end(), [name](const Dog &i)
-                        { return i.GetName() == name; }))
-        {
-            std::cout << "Dog\n";
-        }
-        if (std::any_of(fishes.begin(), fishes.end(), [name](const Fish &i)
-                        { return i.GetName() == name; }))
-        {
-            std::cout << "Fishes\n";
-        }
-        if (std::any_of(parrots.begin(), parrots.end(), [name](const Parrot &i)
-                        { return i.GetName() == name; }))
-        {
-            std::cout << "Parrots\n";
-        }
+        std::set<std::type_index> s;
+		for (const auto& i : box) {
+			if (i->GetName() == name) {
+				s.insert(std::type_index(typeid(*i)));
+			}
+		}
+		std::cout << "amount of species: " << s.size() << '\n';
     }
-	{
-		
-		const auto [min, max] = std::minmax_element(box.begin(), box.end());
-		std::cout << "min and max age:\nmin:"; animal_out(*min);
-		std::cout << "\nmax:"; animal_out(*max);
+
+void task4(const std::vector<Animal*> box)
+{
+		std::vector<Animal*> c(box.size());
+		auto end = std::copy_if(box.begin(), box.end(), c.begin(), [](Animal* i){ return i->GetAge() != -1; });
+		if (c.begin() != end) {
+			auto [min, max] = std::minmax_element(c.begin(), end, [](Animal* i, Animal* j){ return i->GetAge() < j->GetAge(); });
+			std::cout << "min and max age:\nmin: "; animal_out(*min);
+			std::cout << "max: "; animal_out(*max);
+		} else {
+			std::cout << "No animals with age\n";
+		}
 	}
-	return 0;
+
+	void StandartizeString(std::string& i) {
+	if (!i.empty())
+	{
+		i[0] = std::toupper(i[0]);
+		for (auto j = i.begin()+1;j!= i.end();j++)
+		{
+			*j = std::tolower(*j);
+		}
+		
+	}
+	
 }
+

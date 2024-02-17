@@ -362,9 +362,18 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+#vs code
+*.json
+
 #Bazel
 *bazel*
 WORKSPACE
 */WORKSPACE
 */BUILD
 */a.out
+
+#compilers
+*.out*
+*dSYM*
+
+Data.txt
