@@ -122,72 +122,72 @@ int main() {
 
 void task1(const std::vector<Animal*> box)
 {
-		struct comp {
-			bool operator() (const std::optional<Owner>& i, const std::optional<Owner>& j) const {
-			if (!i || !j) {
-				return bool(i) < bool(j);
-			}
-			return i->GetFIO() == j->GetFIO() ? i->GetAdress() < j->GetAdress() : i->GetFIO() < j->GetFIO();
-			}
-		};
-		std::map<std::optional<Owner>, int, comp> m;
-		for (const auto i : box) {
-			m[i->GetOwner()]++;
+	struct comp {
+		bool operator() (const std::optional<Owner>& i, const std::optional<Owner>& j) const {
+		if (!i || !j) {
+			return bool(i) < bool(j);
 		}
-		std::cout << "amout of animals of owner" << '\n';
-		for (auto i : m) {
-			std::cout << (i.first ? i.first->GetFIO() : "No owner") << ": " << i.second << '\n';
+		return i->GetFIO() == j->GetFIO() ? i->GetAdress() < j->GetAdress() : i->GetFIO() < j->GetFIO();
 		}
+	};
+	std::map<std::optional<Owner>, int, comp> m;
+	for (const auto i : box) {
+		m[i->GetOwner()]++;
 	}
+	std::cout << "amout of animals of owner" << '\n';
+	for (auto i : m) {
+		std::cout << (i.first ? i.first->GetFIO() : "No owner") << ": " << i.second << '\n';
+	}
+}
 
 void task2(const std::vector<Animal*> box)
 {
-		std::string spec;
-		std::cout << "enter specie to find:";
-		std::cin >> spec;
-		StandartizeString(spec);
-		std::cout << spec << "s:\n";
-		bool f = false;
-		for (auto i : box) {
-			if(std::string(typeid(*i).name()).find(spec) != std::string::npos) {
-				f = true;
-				std::cout << (i->GetOwner() ? i->GetOwner()->GetFIO() : "No owner") << ", " << (i->GetName().empty() ? "No name" : i->GetName()) << '\n';
-			}
-		}
-		if (!f) {
-			std::cout << "No animal of that specie\n";
+	std::string spec;
+	std::cout << "enter specie to find:";
+	std::cin >> spec;
+	StandartizeString(spec);
+	std::cout << spec << "s:\n";
+	bool f = false;
+	for (auto i : box) {
+		if(std::string(typeid(*i).name()).find(spec) != std::string::npos) {
+			f = true;
+			std::cout << (i->GetOwner() ? i->GetOwner()->GetFIO() : "No owner") << ", " << (i->GetName().empty() ? "No name" : i->GetName()) << '\n';
 		}
 	}
+	if (!f) {
+		std::cout << "No animal of that specie\n";
+	}
+}
 
 void task3(const std::vector<Animal*> box)
 {
-		std::string name;
-		std::cout << "enter name: ";
-		std::cin >> name;
-        std::set<std::type_index> s;
-		for (const auto& i : box) {
-			if (i->GetName() == name) {
-				s.insert(std::type_index(typeid(*i)));
-			}
+	std::string name;
+	std::cout << "enter name: ";
+	std::cin >> name;
+    std::set<std::type_index> s;
+	for (const auto& i : box) {
+		if (i->GetName() == name) {
+			s.insert(std::type_index(typeid(*i)));
 		}
-		std::cout << "amount of species: " << s.size() << '\n';
-    }
+	}
+	std::cout << "amount of species: " << s.size() << '\n';
+}
 
 void task4(const std::vector<Animal*> box)
 {
-		std::vector<Animal*> c(box.size());
-		auto end = std::copy_if(box.begin(), box.end(), c.begin(), [](Animal* i){ return i->GetAge() != -1; });
-		if (c.begin() != end) {
-			auto [min, max] = std::minmax_element(c.begin(), end, [](Animal* i, Animal* j){ return i->GetAge() < j->GetAge(); });
-			std::cout << "min and max age:\nmin: "; animal_out(*min);
-			std::cout << "max: "; animal_out(*max);
-		} else {
-			std::cout << "No animals with age\n";
-		}
+	std::vector<Animal*> c(box.size());
+	auto end = std::copy_if(box.begin(), box.end(), c.begin(), [](Animal* i){ return i->GetAge() != -1; });
+	if (c.begin() != end) {
+		auto [min, max] = std::minmax_element(c.begin(), end, [](Animal* i, Animal* j){ return i->GetAge() < j->GetAge(); });
+		std::cout << "min and max age:\nmin: "; animal_out(*min);
+		std::cout << "max: "; animal_out(*max);
+	} else {
+		std::cout << "No animals with age\n";
 	}
+}
 
-	void StandartizeString(std::string& i) {
-	if (!i.empty())
+void StandartizeString(std::string& i) {
+if (!i.empty())
 	{
 		i[0] = std::toupper(i[0]);
 		for (auto j = i.begin()+1;j!= i.end();j++)
@@ -196,6 +196,5 @@ void task4(const std::vector<Animal*> box)
 		}
 		
 	}
-	
 }
 
