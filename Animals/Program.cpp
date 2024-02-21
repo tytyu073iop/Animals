@@ -43,7 +43,7 @@ void interact(Animal* pet)
 	pet->Do();
 }
 void animal_out(const Animal* min) {
-	std::cout << itot[std::type_index(typeid(*min))] << ';' << min->GetName() << ';';
+	std::cout << itot[std::type_index(typeid(*min))] << ';' << min->GetName() << ';' << (min->GetAge() == -1 ? "" : std::to_string(min->GetAge())) << ';';
 	auto owner = min->GetOwner();
 	if (owner) {
 		std::cout << owner->GetFIO() << ',' << owner->GetAdress();
