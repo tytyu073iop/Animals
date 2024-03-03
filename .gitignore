@@ -377,3 +377,6 @@ WORKSPACE
 *dSYM*
 
 Data.txt
+Animals/Animals.zip
+Animals/.DS_Store
+.DS_Store
