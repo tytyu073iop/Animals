@@ -35,6 +35,7 @@ void task1(const std::vector<Animal*>);
 void task2(const std::vector<Animal*>);
 void task3(const std::vector<Animal*>);
 void task4(const std::vector<Animal*>);
+void move_semantic_test();
 void StandartizeString(std::string&);
 void interact(Animal* pet)
 {
@@ -98,33 +99,7 @@ int main() {
 		}
 	}
 	virtual_test(box[0]);
-	{
-		std::cout << "mOVE TEST:\n";
-		Cat m(Owner("pi", "86"), 8, "Max");
-		std::cout << "copy:";
-		Cat i(m);
-		// std::cout << "equal\n";
-		// i = m;
-		std::cout << "moving\n";
-		Cat j(std::move(m));
-		{
-			j = i;
-			Cat&& q = std::move(i);
-			j = std::move(q);
-		}
-		{
-			std::cout << "experiment\n";
-			Cat&& w(std::move(i));
-			std::cout << "rvalue made\ntest:" << i.GetName() << '\n';
-			move_test(std::move(i));
-		}
-		std::cout << "vs\n";
-		{
-			Cat w(j);
-			move_test(std::move(w));
-		}
-	}
-	std::cout << "Choose task from 1-4: ";
+	std::cout << "Choose task from 1-5: ";
 	short task;
 	std::cin >> task;
 	switch (task)
@@ -140,6 +115,9 @@ int main() {
 		break;
 	case 4:
 		task4(box);
+		break;
+	case 5:
+		move_semantic_test();
 		break;
 	default:
 		std::cout << "No task on that number\n";
@@ -229,3 +207,29 @@ if (!i.empty())
 	}
 }
 
+void move_semantic_test() {
+	std::cout << "mOVE TEST:\n";
+	Cat m(Owner("pi", "86"), 8, "Max");
+	std::cout << "\tcopy:\n";
+	Cat i(m);
+	// std::cout << "equal\n";
+	// i = m;
+	std::cout << "\tmoving\n";
+	Cat j(std::move(m));
+	{
+		std::cout << "\texperiment\n";
+		Cat&& w(std::move(i));
+		std::cout << "\trvalue made\ntest:" << i.GetName() << '\n';
+		move_test(std::move(i));
+	}
+	std::cout << "\tvs\n";
+	{
+		Cat w(j);
+		move_test(std::move(w));
+	}
+	std::cout << "\t=\n";
+	{
+		Cat w = j;
+		w = std::move(j);
+	}
+}

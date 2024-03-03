@@ -11,4 +11,8 @@ public:
 	std::string GetFIO() const;
 	std::string GetAdress() const;
 	//void interact(Animal* pet) const; cycle problem
+	Owner& operator=(const Owner& rhs);
+	Owner(const Owner& other);
+	Owner& operator=(Owner&& rhs);
+	Owner(Owner&& other);
 };
