@@ -43,7 +43,7 @@ void interact(Animal* pet)
 	pet->Do();
 }
 void animal_out(const Animal* min) {
-	std::cout << itot[std::type_index(typeid(*min))] << ';' << min->GetName() << ';';
+	std::cout << itot[std::type_index(typeid(*min))] << ';' << min->GetName() << ';' << (min->GetAge() == -1 ? "" : std::to_string(min->GetAge())) << ';';
 	auto owner = min->GetOwner();
 	if (owner) {
 		std::cout << owner->GetFIO() << ',' << owner->GetAdress();
@@ -52,6 +52,10 @@ void animal_out(const Animal* min) {
 }
 void virtual_test(Animal* i) {
 	std::cout << "virtual test\n";  interact(i); std::cout << '\n';
+}
+
+void move_test(Cat&& i) {
+	Cat q(std::move(i));
 }
 
 int main() {
@@ -94,6 +98,32 @@ int main() {
 		}
 	}
 	virtual_test(box[0]);
+	{
+		std::cout << "mOVE TEST:\n";
+		Cat m(Owner("pi", "86"), 8, "Max");
+		std::cout << "copy:";
+		Cat i(m);
+		// std::cout << "equal\n";
+		// i = m;
+		std::cout << "moving\n";
+		Cat j(std::move(m));
+		{
+			j = i;
+			Cat&& q = std::move(i);
+			j = std::move(q);
+		}
+		{
+			std::cout << "experiment\n";
+			Cat&& w(std::move(i));
+			std::cout << "rvalue made\ntest:" << i.GetName() << '\n';
+			move_test(std::move(i));
+		}
+		std::cout << "vs\n";
+		{
+			Cat w(j);
+			move_test(std::move(w));
+		}
+	}
 	std::cout << "Choose task from 1-4: ";
 	short task;
 	std::cin >> task;
@@ -115,6 +145,7 @@ int main() {
 		std::cout << "No task on that number\n";
 		break;
 	}
+
 	
 	
 	return 0;
