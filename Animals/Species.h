@@ -6,7 +6,7 @@
 class Cat : public Animal {
 public:
 	void Do() const;
-	Cat(std::optional<Owner>, int age, std::string name);
+	Cat(const std::optional<Owner>&, int age, std::string name);
 	Cat(Cat&&);
 	Cat(const Cat& rhs);
 	Cat& operator=(const Cat& rhs);

@@ -16,7 +16,7 @@ public:
 	int GetAge() const;
 	std::optional<Owner> GetOwner() const;
 	virtual void Do() const = 0;
-	Animal(std::optional<Owner>, int age, std::string name);
+	Animal(const std::optional<Owner>&, int age, std::string name);
 	Animal(Animal&& rhs);
 	Animal(const Animal& rhs);
 	Animal& operator=(const Animal& rhs);

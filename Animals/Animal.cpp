@@ -24,7 +24,7 @@ std::optional<Owner> Animal::GetOwner() const
 }
 
 
-Animal::Animal(std::optional<Owner> owner, int age = -1, std::string name = "") : id(new_id++), owner(std::move(owner)), age(age), name(std::move(name)) 
+Animal::Animal(const std::optional<Owner>& owner, int age = -1, std::string name = "") : id(new_id++), owner(std::forward<const std::optional<Owner>>(owner)), age(age), name(std::move(name)) 
 {
     std::cout << "created: " << "Animal\n";
 }

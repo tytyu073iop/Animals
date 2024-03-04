@@ -2,7 +2,7 @@
 #include <iostream>
 #include <utility>
 
-Cat::Cat(std::optional<Owner> owner, int age = -1, std::string name = "") : Animal(std::move(owner), age, std::move(name)) {
+Cat::Cat(const std::optional<Owner>& owner, int age = -1, std::string name = "") : Animal(owner, age, std::move(name)) {
 	std::cout << "Cat created\n";
 }
 
