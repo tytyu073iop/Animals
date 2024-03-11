@@ -1,6 +1,7 @@
 #include "Owner.h"
 #include "Animal.h"
 #include "Species.h"
+#include "factories.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -65,6 +66,12 @@ int main() {
 	if (!in.is_open()) { std::cerr << "File wasn't opened"; return -1; }
 	if (in.peek() == std::char_traits<char>::eof()) { std::cerr << "File empty"; return -2; }
 	std::string temp;
+	// factories
+	catFactory* cf = new catFactory();
+	dogFactory* df = new dogFactory();
+	fishFactory* ff = new fishFactory();
+	parrotFactory* pf = new parrotFactory();
+	//end
 	while (std::getline(in, temp)) {
 		std::stringstream ss(temp);
 		std::string spec; if (!std::getline(ss, spec, ';')) {std::cerr << "Something went wrong\n" << spec; return 0;}
@@ -86,14 +93,14 @@ int main() {
 		StandartizeString(spec);
 		if (spec == "Dog") {
 			// auto i = Dog(Owner(own_name, own_adrr), num_age, name);
-			box.push_back(new Dog(owner, num_age, name));
+			box.push_back(df->createAnimal(owner, num_age, name));
 			//box.push_back(dogs.back());
 		} else if (spec == "Cat") {
-			box.push_back(new Cat(owner, num_age, name));
+			box.push_back(cf->createAnimal(owner, num_age, name));
 		} else if (spec == "Fish") {
-			box.push_back(new Fish(owner, num_age, name));
+			box.push_back(ff->createAnimal(owner, num_age, name));
 		} else if (spec == "Parrot") {
-			box.push_back(new Parrot(owner, num_age, name));
+			box.push_back(pf->createAnimal(owner, num_age, name));
 		} else {
 			std::cerr << "No species"; return -3;
 		}
