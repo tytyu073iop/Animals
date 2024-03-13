@@ -129,11 +129,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animal.h" />
+    <ClInclude Include="AnimalVector.h" />
+    <ClInclude Include="Composite.h" />
+    <ClInclude Include="factories.h" />
     <ClInclude Include="Owner.h" />
     <ClInclude Include="Species.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animal.cpp" />
+    <ClCompile Include="AnimalVector.cpp" />
+    <ClCompile Include="Composite.cpp" />
     <ClCompile Include="Owner.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Species.cpp" />

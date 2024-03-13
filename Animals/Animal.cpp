@@ -63,5 +63,8 @@ Animal& Animal::operator=(Animal&& rhs)
     return *this;
 }
 
+int Animal::getAmount() const {
+    return 1;
+}
 
 int Animal::new_id = 0;

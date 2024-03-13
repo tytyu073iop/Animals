@@ -2,6 +2,7 @@
 #include "Animal.h"
 #include "Species.h"
 #include "factories.h"
+#include "AnimalVector.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -19,7 +20,7 @@
 #include <typeindex>
 #include <cctype>
 #include <set>
-#include <optional>
+#include <optional> 
 
 // Animal definition: species;name;age;owner name,owner adress
 
@@ -37,6 +38,7 @@ void task2(const std::vector<Animal*>);
 void task3(const std::vector<Animal*>);
 void task4(const std::vector<Animal*>);
 void move_semantic_test();
+void CompositeTest();
 void StandartizeString(std::string&);
 void interact(Animal* pet)
 {
@@ -106,7 +108,7 @@ int main() {
 		}
 	}
 	virtual_test(box[0]);
-	std::cout << "Choose task from 1-5: ";
+	std::cout << "Choose task from 1-6: ";
 	short task;
 	std::cin >> task;
 	switch (task)
@@ -126,6 +128,9 @@ int main() {
 	case 5:
 		move_semantic_test();
 		break;
+	case 6:
+		CompositeTest();
+		break;
 	default:
 		std::cout << "No task on that number\n";
 		break;
@@ -134,6 +139,24 @@ int main() {
 	
 	
 	return 0;
+}
+
+void CompositeTest() {
+	factory* fa[]{ new catFactory(), new dogFactory(), new fishFactory(), new parrotFactory() };
+	//creating demo
+	Folder f;
+	for (size_t i = 0; i < 2; i++)
+	{
+		Folder* q = new Folder();
+		for (size_t j = 0; j < 4; j++)
+		{
+			q->push_back(fa[j]->createAnimal(Owner("fdfd", "fsdsd"), 9, "van"));
+		}
+		f.push_back(q);
+	}
+	//test
+	f.Do();
+	std::cout << "\namount: " << f.getAmount() << '\n';
 }
 
 void task1(const std::vector<Animal*> box)

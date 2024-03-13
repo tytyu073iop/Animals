@@ -3,8 +3,9 @@
 #include <string>
 #include <optional>
 #include "Owner.h"
+#include "Composite.h"
 
-class Animal {
+class Animal : public Unit {
 	static int new_id;
 	int id;
 	std::string name;
@@ -21,4 +22,5 @@ public:
 	Animal(const Animal& rhs);
 	Animal& operator=(const Animal& rhs);
 	Animal& operator=(Animal&& rhs);
+	int getAmount() const;
 };

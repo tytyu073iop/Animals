@@ -93,7 +93,7 @@ void Dog::Do() const
 
 void Fish::Do() const
 {
-	std::cout << "meow" << std::endl;
+	std::cout << "bolk" << std::endl;
 }
 
 void Parrot::Do() const
