@@ -1,4 +1,5 @@
 #pragma once
+#include <stddef.h> //size_t
 
 class Unit {
 public:
@@ -7,4 +8,5 @@ public:
 	//DANGER! WORKS ONLY FOR COMPOSITE OBJECTS!
 	virtual void push_back(Unit*);
 	virtual void pop(size_t i);
+	virtual ~Unit();
 };
