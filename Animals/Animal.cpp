@@ -30,7 +30,7 @@ Animal::Animal(const std::optional<Owner>& owner, int age = -1, std::string name
 }
 
 //id moves!
-Animal::Animal(Animal&& rhs) : id(std::move(id)), owner(std::move(owner)), age(std::move(age)), name(std::move(name))
+Animal::Animal(Animal&& rhs) : id(std::move(rhs.id)), owner(std::move(rhs.owner)), age(std::move(rhs.age)), name(std::move(rhs.name))
 {
     std::cout << "moved: " << "Animal\n";
 }
