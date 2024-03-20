@@ -157,6 +157,7 @@ void CompositeTest() {
 	//test
 	f.Do();
 	std::cout << "\namount: " << f.getAmount() << '\n';
+	fa[0]->createAnimal(Owner("fdfd", "fsdsd"), 9, "van")->pop(0);
 }
 
 void task1(const std::vector<Animal*> box)
